@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="javax.ws.rs.Path"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.Consumes"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.POST"/>
+    <fullyQualifiedTypeName name="java.awt.PageAttributes.MediaType"/>
+    <fullyQualifiedTypeName name="com.krakedev.inventario.entidades.Producto"/>
+    <fullyQualifiedTypeName name="javax.enterprise.context.spi.Context"/>
+    <fullyQualifiedTypeName name="javax.naming.Context"/>
+    <fullyQualifiedTypeName name="javax.sql.DataSource"/>
+    <fullyQualifiedTypeName name="com.krakedev.inventario.entidades.Categoria"/>
+    <fullyQualifiedTypeName name="com.krakedev.inventario.persistencia.CategoriasBDD"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.GET"/>
+    <fullyQualifiedTypeName name="javax.enterprise.inject.Produces"/>
+    <fullyQualifiedTypeName name="com.krakedev.utils.ConexionBDD"/>
+    <fullyQualifiedTypeName name="javax.management.openmbean.KeyAlreadyExistsException"/>
+    <fullyQualifiedTypeName name="com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.Builder"/>
+    <fullyQualifiedTypeName name="java.sql.SQLException"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="java.sql.Connection"/>
+    <fullyQualifiedTypeName name="java.sql.PreparedStatement"/>
+    <fullyQualifiedTypeName name="java.sql.ResultSet"/>
+    <fullyQualifiedTypeName name="com.krakedev.entidades.Cliente"/>
+    <fullyQualifiedTypeName name="com.krakedev.persistencia.ClientesBDD"/>
+    <fullyQualifiedTypeName name="com.krakedev.excepciones.KrakeDevExcepction"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.Produces"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.core.Response"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.PathParam"/>
+    <fullyQualifiedTypeName name="com.krakedev.inventarios.entidades.Venta"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="javax.ws.rs.PUT"/>
+    <fullyQualifiedTypeName name="com.krakedev.inventarios.entidades.EstadoPedido"/>
+    <fullyQualifiedTypeName name="com.krakedev.inventarios.entidades.Pedido"/>
+    <fullyQualifiedTypeName name="com.krakedev.inventarios.excepciones.KrakedevException"/>
+</qualifiedTypeNameHistroy>

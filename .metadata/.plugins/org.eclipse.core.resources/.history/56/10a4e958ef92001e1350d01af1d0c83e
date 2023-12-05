@@ -1,0 +1,129 @@
+package com.krakedev.inventarios.bdd;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+
+import com.krakedev.inventarios.entidades.DetalleVentas;
+import com.krakedev.inventarios.entidades.Ventas;
+import com.krakedev.inventarios.excepciones.KrakedevException;
+import com.krakedev.inventarios.utils.ConexionBDD;
+
+public class VentasBDD {
+	public void insertar(Ventas venta) throws KrakedevException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		PreparedStatement psDet = null;
+		PreparedStatement psHis = null;
+		PreparedStatement psAct = null;
+		ResultSet rsClave = null;
+		
+		BigDecimal subtotalFinal = new BigDecimal(0);
+		BigDecimal subtotalIvaFinal = new BigDecimal(0);
+
+		int codigoCabecera = 0;
+
+		Date fechaActual = new Date();
+		java.sql.Date fechaSQL = new java.sql.Date(fechaActual.getTime());
+		Timestamp fechaHoraActual = new Timestamp(fechaActual.getTime());
+
+		try {
+			con = ConexionBDD.obtenerConexion();
+			ps = con.prepareStatement(
+					"insert into cabecera_ventas(fecha, totalsiniva, iva, total) VALUES (?, ?, ?, ?);",
+					Statement.RETURN_GENERATED_KEYS);
+
+			ps.setDate(1, fechaSQL);
+			BigDecimal valorCero = new BigDecimal(0);
+			ps.setBigDecimal(2, valorCero);
+			ps.setBigDecimal(3, valorCero);
+			ps.setBigDecimal(4, valorCero);
+
+			ps.executeUpdate();
+
+			rsClave = ps.getGeneratedKeys();
+
+			if (rsClave.next()) {
+				codigoCabecera = rsClave.getInt(1);
+			}
+
+			ArrayList<DetalleVentas> detallesVentas = venta.getDetalles();
+			DetalleVentas det;
+			for (int i = 0; i < detallesVentas.size(); i++) {
+				det = detallesVentas.get(i);
+				psDet = con.prepareStatement(
+						"INSERT INTO detalle_ventas (cabecera_ventas, producto, cantidad, precio_venta, subtotal, subtotal_con_iva) VALUES (?, ?, ?, ?, ?, ?);");
+				psDet.setInt(1, codigoCabecera);
+				psDet.setInt(2, det.getProducto().getCodigo());
+				psDet.setInt(3, det.getCantidad());
+				BigDecimal pv = det.getProducto().getPrecioVenta();
+				BigDecimal cantidad = new BigDecimal(det.getCantidad());
+				BigDecimal subtotal = pv.multiply(cantidad);
+				BigDecimal subtotalIVA;
+				BigDecimal IVA = new BigDecimal(1.12);
+
+				if (det.getProducto().isTieneIva() == true) {
+					subtotalIVA = subtotal.multiply(IVA);
+				} else {
+					subtotalIVA = subtotal;
+				}
+
+				psDet.setBigDecimal(4, pv);
+				psDet.setBigDecimal(5, subtotal);
+				subtotalFinal = subtotalFinal.add(subtotal);
+				psDet.setBigDecimal(6, subtotalIVA);
+				subtotalIvaFinal = subtotalIvaFinal.add(subtotalIVA);
+				
+				/*
+				System.out.println("subtotal>>" + subtotalFinal);
+				System.out.println("Iva>>" + subtotalIvaFinal.subtract(subtotalFinal));
+				System.out.println("subtotal IVA>>" + subtotalIvaFinal);
+				*/
+				
+				psDet.executeUpdate();
+				
+				psHis = con.prepareStatement(
+						"INSERT INTO historial_stock(fecha, referencia, producto, cantidad) VALUES ( ?, ?, ?, ?);");
+				psHis.setTimestamp(1, fechaHoraActual);
+				psHis.setString(2, "VENTA " + codigoCabecera);
+				psHis.setInt(3, det.getProducto().getCodigo());
+				psHis.setInt(4, det.getCantidad() * -1);
+
+				psHis.executeUpdate();
+			}
+			
+			psAct = con.prepareStatement("update cabecera_ventas set totalsiniva = ?, iva = ?, total = ? where codigo_cab = ?");
+			psAct.setBigDecimal(1, subtotalFinal);
+			psAct.setBigDecimal(2, subtotalIvaFinal.subtract(subtotalFinal));
+			psAct.setBigDecimal(3, subtotalIvaFinal);
+			psAct.setInt(4, codigoCabecera);
+			psAct.executeUpdate();
+
+			System.out.println("Codigo Generado>>" + codigoCabecera);
+						
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new KrakedevException("Error al insertar el venta. Detalle :" + e.getMessage());
+		} catch (KrakedevException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+
+
+}
